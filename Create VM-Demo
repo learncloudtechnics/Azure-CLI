@@ -1,1 +1,32 @@
+# This command to create VM using azure CLI
 
+# create shell variables
+$resourceGroup = "VMTutorialResources"
+$location = "eastus"
+
+az group create --name $resourceGroup --location $location
+
+az group create --name VMTutorialResources --location eastus
+
+
+
+# create shell variables
+$vnetName = "TutorialVNet1"
+$subnetName = "TutorialSubnet1"
+$vnetAddressPrefix = "10.0.0.0/16"
+$subnetAddressPrefix = "10.0.0.0/24"
+
+az network vnet create --name $vnetName --resource-group $resourceGroup --address-prefixes $vnetAddressPrefix --subnet-name $subnetName --subnet-prefixes $subnetAddressPrefix
+
+# create shell variables
+$vmName = "TutorialVM1"
+
+az vm create --resource-group $resourceGroup --name $vmName --image MicrosoftWindowsServer:WindowsServer:2022-datacenter-azure-edition:latest --vnet-name $vnetName --subnet $subnetName --output json --verbose	
+
+
+
+az vm show --name $vmName --resource-group $resourceGroup
+az vm show --name $vmName --resource-group $resourceGroup --query 'networkProfile.networkInterfaces[].id' --output tsv
+
+az network nic show --ids $nicId
+az network nic show --ids $nicId --query '{IP:ipConfigurations[].publicIpAddress.id, Subnet:ipConfigurations[].subnet.id}' -o json
